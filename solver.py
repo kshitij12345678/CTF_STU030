@@ -44,9 +44,10 @@ def extract_prefix(title, length=8):
 def compute_hash(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
-def save_result(result, filename='flags.txt'):
+def save_flags(flag1, flag2, filename='flags.txt'):
     with open(filename, 'w') as f:
-        f.write(f"RESULT = {result}\n")
+        f.write(f"FLAG1 = {flag1}\n")
+        f.write(f"FLAG2 = {flag2}\n")
 
 
 student_id = "STU030"
@@ -68,14 +69,20 @@ if len(matching_reviews) > 0:
     if target_book is not None:
         print(f"Target Book: {target_book['title']}")
         
+        # FLAG1: Hash of title prefix
         title_prefix = extract_prefix(target_book['title'])
-        result_hash = compute_hash(title_prefix)
+        flag1 = compute_hash(title_prefix)
+        
+        # FLAG2: The fake review contains the hash - format FLAG2{HASH}
+        flag2 = f"FLAG2{{{hash_id}}}"
         
         print(f"Title Prefix: {title_prefix}")
-        print(f"Result Hash: {result_hash}")
+        print(f"FLAG1: {flag1}")
+        print(f"Fake review text: {matching_reviews['text'].iloc[0]}")
+        print(f"FLAG2: {flag2}")
         
-        save_result(result_hash)
-        print("Result saved to output.txt")
+        save_flags(flag1, flag2)
+        print("Flags saved to flags.txt")
     else:
         print("No target book found")
 else:
